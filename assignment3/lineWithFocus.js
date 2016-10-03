@@ -1,4 +1,4 @@
-d3.csv("./data2.txt", function(error, data) {
+d3.csv("https://raw.githubusercontent.com/jamesypeng/mids-w209-assignments/master/assignment3/data2.csv", function(error, data) {
 	console.log(data);
 
 	/**************************************
