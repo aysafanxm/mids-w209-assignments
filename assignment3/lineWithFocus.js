@@ -42,18 +42,18 @@ d3.csv("https://raw.githubusercontent.com/jamesypeng/mids-w209-assignments/maste
 			.useInteractiveGuideline(true)
 			.focusEnable(false) // disable focus
 			.showYAxis(true)
+			.margin({bottom: 60})
 			.forceY([0,maxY]);
 
 
 		chart.xAxis
-			.ticks(20)
+			.axisLabel('Hours of the Day')
 			.tickFormat(function(d) {
 			    console.log(data[d]["time"]);
 		 		return data[d]["time"];
 		 	});
 
 		chart.x2Axis
-			.ticks(20)
 			.tickFormat(function(d) {
 				return data[d]["time"];
 			});
