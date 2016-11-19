@@ -220,32 +220,43 @@ d3.csv("data2.csv", function (error, data) {
 		.attr("y2", main_y0(0) + 6)
 
 
-	focus.append("line")
-		.attr("class", "y0")
-		.attr("x1", main_width - 6)
-		.attr("x2", main_width + 6);
+	function focus_y0_append() {
+		focus.append("line")
+			.attr("class", "y0")
+			.attr("x1", main_width - 6)
+			.attr("x2", main_width + 6);
+
+		focus.append("circle")
+			.attr("class", "y0")
+			.attr("r", 4);
+
+		focus.append("text")
+			.attr("class", "y0")
+			.attr("dy", "-1em");
 
 
-	focus.append("line")
-		.attr("class", "y1")
-		.attr("x1", main_width - 6)
-		.attr("x2", main_width + 6);
 
-	focus.append("circle")
-		.attr("class", "y0")
-		.attr("r", 4);
+	}
 
-	focus.append("text")
-		.attr("class", "y0")
-		.attr("dy", "-1em");
+	function focus_y1_append(){
+		focus.append("line")
+			.attr("class", "y1")
+			.attr("x1", main_width - 6)
+			.attr("x2", main_width + 6);
 
-	focus.append("circle")
-		.attr("class", "y1")
-		.attr("r", 4);
+		focus.append("circle")
+			.attr("class", "y1")
+			.attr("r", 4);
 
-	focus.append("text")
-		.attr("class", "y1")
-		.attr("dy", "-1em");
+		focus.append("text")
+			.attr("class", "y1")
+			.attr("dy", "-1em");
+
+	}
+
+	focus_y0_append();
+	focus_y1_append();
+
 
 	main.append("rect")
 		.attr("class", "overlay")
@@ -265,28 +276,65 @@ d3.csv("data2.csv", function (error, data) {
 			d0 = data[i - 1],
 			d1 = data[i],
 			d = x0 - d0.time > d1.time - x0 ? d1 : d0;
-		focus.select("circle.y0").attr("transform", "translate(" + main_x(d.time) + "," + main_y0(d.Day0901) + ")");
-		focus.select("text.y0").attr("transform", "translate(" + main_x(d.time) + "," + main_y0(d.Day0901) + ")").text(formatOutput0(d));
-		focus.select("circle.y1").attr("transform", "translate(" + main_x(d.time) + "," + main_y1(d.Day0902) + ")");
-		focus.select("text.y1").attr("transform", "translate(" + main_x(d.time) + "," + main_y1(d.Day0902) + ")").text(formatOutput1(d));
+
+		function y0_focus() {
+			focus.select("circle.y0").attr("transform", "translate(" + main_x(d.time) + "," + main_y0(d.Day0901) + ")");
+			focus.select("text.y0").attr("transform", "translate(" + main_x(d.time) + "," + main_y0(d.Day0901) + ")").text(formatOutput0(d));
+			focus.select(".y0").attr("transform", "translate(" + main_width * -1 + ", " + main_y0(d.Day0901) + ")").attr("x2", main_width + main_x(d.time))
+		}
+		function y1_focus(){
+			focus.select("circle.y1").attr("transform", "translate(" + main_x(d.time) + "," + main_y1(d.Day0902) + ")");
+			focus.select("text.y1").attr("transform", "translate(" + main_x(d.time) + "," + main_y1(d.Day0902) + ")").text(formatOutput1(d));
+			focus.select(".y1").attr("transform", "translate(" + main_width * -1 + ", " + main_y0(d.Day0902) + ")").attr("x2", main_width + main_x(d.time));
+			//focus.select(".y1").attr("transform", "translate(0, " + main_y1(d.Day0902) + ")").attr("x1", main_x(d.time));
+		}
+
+
+
+
 		focus.select(".x").attr("transform", "translate(" + main_x(d.time) + ",0)");
-		focus.select(".y0").attr("transform", "translate(" + main_width * -1 + ", " + main_y0(d.Day0901) + ")").attr("x2", main_width + main_x(d.time));
-		focus.select(".y1").attr("transform", "translate(" + main_width * -1 + ", " + main_y0(d.Day0902) + ")").attr("x2", main_width + main_x(d.time));
-		//focus.select(".y1").attr("transform", "translate(0, " + main_y1(d.Day0902) + ")").attr("x1", main_x(d.time));
+
+
+;       if( show_dates == 0)
+		{
+			y0_focus();
+		}
+		else if( show_dates ==1)
+		{
+			y1_focus();
+		}
+		else {
+
+			y1_focus();
+			y0_focus();
+		}
+
 	}
 
 	///////////////////////////////////
 
+	function y0_focus_remove()
+	{
+		focus.select("circle.y0").remove()
+		focus.select("text.y0").remove()
+		focus.select(".y0").remove()
 
+	}
+	function y1_focus_remove()
+	{
+		focus.select("circle.y1").remove()
+		focus.select("text.y1").remove()
+		focus.select(".y1").remove()
+	}
 //container for all buttons
 	var allButtons = svg.append("g")
 		.attr("id", "allButtons")
 
 // button labels
-	var labels = ['09/01', '09/2', 'Both'];
+	var labels = ['09/01', '09/02', 'Both'];
 
 //colors for different button states
-	var defaultColor = "#6ec6e2";  //"#7777BB" //"#5278a5", "#6ec6e2", "#5aa335"
+	var defaultColor = "#5278a5";  //"#7777BB" //"#5278a5", "#6ec6e2", "#5aa335"
 	var hoverColor = "#0000ff";
 	var pressedColor = "#000077";
 
@@ -303,6 +351,10 @@ d3.csv("data2.csv", function (error, data) {
 			//d3.select("path").select("line line0").remove();
 			main.select(".line0").remove();
 			main.select(".line1").remove();
+
+			y1_focus_remove();
+			y0_focus_remove();
+
 			show_dates = i
 			if (show_dates == 0) {
 				main.select(".line1").remove();
@@ -314,6 +366,9 @@ d3.csv("data2.csv", function (error, data) {
 					.attr("class", "line line0")
 					.attr("d", main_line0);
 
+				focus_y0_append()
+
+
 			}
 			else if (show_dates == 1) {
 				//draw line 1
@@ -323,6 +378,8 @@ d3.csv("data2.csv", function (error, data) {
 					.attr("clip-path", "url(#clip)")
 					.attr("class", "line line1")
 					.attr("d", main_line1);
+
+				focus_y1_append()
 			}
 			else {
 				// draw line0 and 1
@@ -338,6 +395,9 @@ d3.csv("data2.csv", function (error, data) {
 					.attr("clip-path", "url(#clip)")
 					.attr("class", "line line1")
 					.attr("d", main_line1);
+
+				focus_y0_append();
+				focus_y1_append();
 
 
 			}
