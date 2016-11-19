@@ -4,10 +4,15 @@
 //            main_height = 500 - main_margin.top - main_margin.bottom,
 //            mini_height = 500 - mini_margin.top - mini_margin.bottom;
 
+// # 0 - show 0901
+// # 1 - show 0902
+// # 2 - show both
+var show_dates = 2;
+
 var overall_box_height = 600;
 var var_mini_box_beight = 120;
 
-var main_margin = {top: 10, right: 40, bottom: var_mini_box_beight-20, left: 40};
+var main_margin = {top: 10, right: 40, bottom: var_mini_box_beight - 20, left: 40};
 var main_width = 960 - main_margin.left - main_margin.right;
 var main_height = overall_box_height - main_margin.top - main_margin.bottom;
 
@@ -17,9 +22,15 @@ var mini_height = (main_height + main_margin.top + main_margin.bottom ) - mini_m
 
 var formatDate = d3.time.format("%H:%M"),
 	parseDate = formatDate.parse,
-	bisectDate = d3.bisector(function(d) { return d.time; }).left,
-	formatOutput0 = function(d) { return "09/01 " + formatDate(d.time) + ": " + d.Day0901 + " (bpm)"; },
-	formatOutput1 = function(d) { return "09/02 " + formatDate(d.time) + ": " + d.Day0902 + " (bpm)";};
+	bisectDate = d3.bisector(function (d) {
+		return d.time;
+	}).left,
+	formatOutput0 = function (d) {
+		return "09/01 " + formatDate(d.time) + ": " + d.Day0901 + " (bpm)";
+	},
+	formatOutput1 = function (d) {
+		return "09/02 " + formatDate(d.time) + ": " + d.Day0902 + " (bpm)";
+	};
 
 var main_x = d3.time.scale()
 	.range([0, main_width]),
@@ -71,21 +82,37 @@ var brush = d3.svg.brush()
 
 var main_line0 = d3.svg.line()
 	.interpolate("cardinal")
-	.x(function(d) { return main_x(d.time); })
-	.y(function(d) { return main_y0(d.Day0901); });
+	.x(function (d) {
+		return main_x(d.time);
+	})
+	.y(function (d) {
+		return main_y0(d.Day0901);
+	});
 
 var main_line1 = d3.svg.line()
 	.interpolate("cardinal")
-	.x(function(d) { return main_x(d.time); })
-	.y(function(d) { return main_y1(d.Day0902); });
+	.x(function (d) {
+		return main_x(d.time);
+	})
+	.y(function (d) {
+		return main_y1(d.Day0902);
+	});
 
 var mini_line0 = d3.svg.line()
-	.x(function(d) { return mini_x(d.time); })
-	.y(function(d) { return mini_y0(d.Day0901); });
+	.x(function (d) {
+		return mini_x(d.time);
+	})
+	.y(function (d) {
+		return mini_y0(d.Day0901);
+	});
 
 var mini_line1 = d3.svg.line()
-	.x(function(d) { return mini_x(d.time); })
-	.y(function(d) { return mini_y1(d.Day0902); });
+	.x(function (d) {
+		return mini_x(d.time);
+	})
+	.y(function (d) {
+		return mini_y1(d.Day0902);
+	});
 
 var svg = d3.select("body").append("svg")
 	.attr("width", main_width + main_margin.left + main_margin.right)
@@ -103,39 +130,16 @@ var main = svg.append("g")
 var mini = svg.append("g")
 	.attr("transform", "translate(" + mini_margin.left + "," + mini_margin.top + ")");
 
-///////////////////////////////////
-//container for all buttons
-var allButtons= svg.append("g")
-	.attr("id","allButtons")
 
-//fontawesome button labels
-var labels= ['\uf017','\uf200','\uf183'];
-
-//groups for each button (which will hold a rect and text)
-var buttonGroups= allButtons.selectAll("g.button")
-	.data(labels)
-	.enter()
-	.append("g")
-	.attr("class","button")
-	.style("cursor","pointer")
-
-
-
-
-//////////////////////////
-
-
-
-
-d3.csv("data2.csv", function(error, data) {
-	data.forEach(function(d) {
+d3.csv("data2.csv", function (error, data) {
+	data.forEach(function (d) {
 		d.time = parseDate(d.time);
 		d.Day0901 = +d.Day0901;
 		d.Day0902 = +d.Day0902;
 		d.Day0903 = +d.Day0903;
 	});
 
-	data.sort(function(a, b) {
+	data.sort(function (a, b) {
 		return a.time - b.time;
 	});
 
@@ -148,8 +152,12 @@ d3.csv("data2.csv", function(error, data) {
 	mini_x.domain(main_x.domain());
 //        mini_y0.domain(main_y0.domain());
 //        mini_y1.domain(main_y1.domain());
-	mini_y0.domain(d3.extent(data, function(d) { return d.Day0901; }));
-	mini_y1.domain(d3.extent(data, function(d) { return d.Day0902; }));
+	mini_y0.domain(d3.extent(data, function (d) {
+		return d.Day0901;
+	}));
+	mini_y1.domain(d3.extent(data, function (d) {
+		return d.Day0902;
+	}));
 
 	main.append("path")
 		.datum(data)
@@ -243,8 +251,12 @@ d3.csv("data2.csv", function(error, data) {
 		.attr("class", "overlay")
 		.attr("width", main_width)
 		.attr("height", main_height)
-		.on("mouseover", function() { focus.style("display", null); })
-		.on("mouseout", function() { focus.style("display", "none"); })
+		.on("mouseover", function () {
+			focus.style("display", null);
+		})
+		.on("mouseout", function () {
+			focus.style("display", "none");
+		})
 		.on("mousemove", mousemove);
 
 	function mousemove() {
@@ -262,6 +274,136 @@ d3.csv("data2.csv", function(error, data) {
 		focus.select(".y1").attr("transform", "translate(" + main_width * -1 + ", " + main_y0(d.Day0902) + ")").attr("x2", main_width + main_x(d.time));
 		//focus.select(".y1").attr("transform", "translate(0, " + main_y1(d.Day0902) + ")").attr("x1", main_x(d.time));
 	}
+
+	///////////////////////////////////
+
+
+//container for all buttons
+	var allButtons = svg.append("g")
+		.attr("id", "allButtons")
+
+// button labels
+	var labels = ['09/01', '09/2', 'Both'];
+
+//colors for different button states
+	var defaultColor = "#6ec6e2";  //"#7777BB" //"#5278a5", "#6ec6e2", "#5aa335"
+	var hoverColor = "#0000ff";
+	var pressedColor = "#000077";
+
+//groups for each button (which will hold a rect and text)
+	var buttonGroups = allButtons.selectAll("g.button")
+		.data(labels)
+		.enter()
+		.append("g")
+		.attr("class", "button")
+		.style("cursor", "pointer")
+		.on("click", function (d, i) {
+			updateButtonColors(d3.select(this), d3.select(this.parentNode))
+			//d3.select("#numberToggle").text(i+1)
+			//d3.select("path").select("line line0").remove();
+			main.select(".line0").remove();
+			main.select(".line1").remove();
+			show_dates = i
+			if (show_dates == 0) {
+				main.select(".line1").remove();
+
+				// draw line0
+				main.append("path")
+					.datum(data)
+					.attr("clip-path", "url(#clip)")
+					.attr("class", "line line0")
+					.attr("d", main_line0);
+
+			}
+			else if (show_dates == 1) {
+				//draw line 1
+
+				main.append("path")
+					.datum(data)
+					.attr("clip-path", "url(#clip)")
+					.attr("class", "line line1")
+					.attr("d", main_line1);
+			}
+			else {
+				// draw line0 and 1
+				main.append("path")
+					.datum(data)
+					.attr("clip-path", "url(#clip)")
+					.attr("class", "line line0")
+					.attr("d", main_line0);
+
+
+				main.append("path")
+					.datum(data)
+					.attr("clip-path", "url(#clip)")
+					.attr("class", "line line1")
+					.attr("d", main_line1);
+
+
+			}
+
+
+		})
+		.on("mouseover", function () {
+			if (d3.select(this).select("rect").attr("fill") != pressedColor) {
+				d3.select(this)
+					.select("rect")
+					.attr("fill", hoverColor);
+			}
+		})
+		.on("mouseout", function () {
+			if (d3.select(this).select("rect").attr("fill") != pressedColor) {
+				d3.select(this)
+					.select("rect")
+					.attr("fill", defaultColor);
+			}
+		})
+
+	var bWidth = 40; //button width
+	var bHeight = 25; //button height
+	var bSpace = 10; //space between buttons
+	var x0 = main_width - (bWidth + bSpace) * 2; //x offset
+	var y0 = 10; //y offset
+
+//adding a rect to each toggle button group
+//rx and ry give the rect rounded corner
+	buttonGroups.append("rect")
+		.attr("class", "buttonRect")
+		.attr("width", bWidth)
+		.attr("height", bHeight)
+		.attr("x", function (d, i) {
+			return x0 + (bWidth + bSpace) * i;
+		})
+		.attr("y", y0)
+		.attr("rx", 5) //rx and ry give the buttons rounded corners
+		.attr("ry", 5)
+		.attr("fill", defaultColor)
+
+//adding text to each toggle button group, centered
+//within the toggle button rect
+	buttonGroups.append("text")
+		.attr("class", "buttonText")
+		.attr("font-family", "FontAwesome")
+		.attr("x", function (d, i) {
+			return x0 + (bWidth + bSpace) * i + bWidth / 2;
+		})
+		.attr("y", y0 + bHeight / 2)
+		.attr("text-anchor", "middle")
+		.attr("dominant-baseline", "central")
+		.attr("fill", "white")
+		.text(function (d) {
+			return d;
+		})
+
+	function updateButtonColors(button, parent) {
+		parent.selectAll("rect")
+			.attr("fill", defaultColor)
+
+		button.select("rect")
+			.attr("fill", pressedColor)
+	}
+
+//////////////////////////
 });
 
 function brush() {
