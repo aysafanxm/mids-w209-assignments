@@ -22,7 +22,7 @@
     .line {
         stroke: black;
         fill: none;
-        stroke-width: 0.75px;
+        stroke-width: 2px;
     }
 
     .line.line0 {
@@ -83,12 +83,16 @@
 //            main_height = 500 - main_margin.top - main_margin.bottom,
 //            mini_height = 500 - mini_margin.top - mini_margin.bottom;
 
-    var main_margin = {top: 20, right: 80, bottom: 100, left: 40};
-    var main_width = 960 - main_margin.left - main_margin.right;
-    var main_height = 700 - main_margin.top - main_margin.bottom;
+    var overall_box_height = 800;
+    var_mini_box_beight = 150;
 
-    var mini_margin = {top: main_height, right: 80, bottom: 20, left: 40};
-    var mini_height = 700 - mini_margin.top - mini_margin.bottom;
+    var main_margin = {top: 20, right: 40, bottom: var_mini_box_beight, left: 40};
+    var main_width = 960 - main_margin.left - main_margin.right;
+    var main_height = overall_box_height - main_margin.top - main_margin.bottom;
+
+    var mini_margin = {top: main_height + main_margin.top , right: 40, bottom: 20, left: 40};
+
+    var mini_height = (main_height + main_margin.top + main_margin.bottom ) - mini_margin.top - mini_margin.bottom;
 
     var formatDate = d3.time.format("%H:%M"),
             parseDate = formatDate.parse,
@@ -193,9 +197,9 @@
 
         main_x.domain([data[0].time, data[data.length - 1].time]);
         //main_y0.domain(d3.extent(data, function(d) { return d.Day0901; }));
-        main_y0.domain([0, 200]);
+        main_y0.domain([0, 160]);
         //main_y1.domain(d3.extent(data, function(d) { return d.Day0902; }));
-        main_y1.domain([0, 200]);
+        main_y1.domain([0, 160]);
 
         mini_x.domain(main_x.domain());
         mini_y0.domain(main_y0.domain());
@@ -246,12 +250,12 @@
 
         mini.append("path")
                 .datum(data)
-                .attr("class", "line")
+                .attr("class", "line line0")
                 .attr("d", mini_line0);
 
         mini.append("path")
                 .datum(data)
-                .attr("class", "line")
+                .attr("class", "line line1")
                 .attr("d", mini_line1);
 
         mini.append("g")
